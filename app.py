@@ -1,6 +1,5 @@
 import gradio as gr
 import torch, os
-import spaces
 from loadimg import load_img
 from transformers import AutoModelForImageSegmentation
 from torchvision import transforms
@@ -31,7 +30,6 @@ def fn(image):
     processed_image = process(im)
     return (processed_image, origin)
 
-@spaces.GPU
 def process(image):
     image_size = image.size
     input_images = transform_image(image).unsqueeze(0).to(device)

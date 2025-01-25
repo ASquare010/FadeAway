@@ -1,27 +1,28 @@
 name: background_remover_service
 
 services:
-  background_remover_gpu:
-    build:
-      context: .
-      dockerfile: ./Dockerfile_gpu
-    environment:
-      - PORT=7537
-    ports:
-      - '7537:7537'
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              device_ids: ['0']
-              capabilities: [gpu]
 
-  # background_remover_cpu:
+  # background_remover_gpu:
   #   build:
   #     context: .
-  #     dockerfile: ./Dockerfile_cpu
+  #     dockerfile: ./Dockerfile_gpu
   #   environment:
   #     - PORT=7537
   #   ports:
   #     - '7537:7537'
+  #   deploy:
+  #     resources:
+  #       reservations:
+  #         devices:
+  #           - driver: nvidia
+  #             device_ids: ['0']
+  #             capabilities: [gpu]
+
+  background_remover_cpu:
+    build:
+      context: .
+      dockerfile: ./Dockerfile_cpu
+    environment:
+      - PORT=7537
+    ports:
+      - '7537:7537'
