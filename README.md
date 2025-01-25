@@ -3,6 +3,7 @@
 FadeAway is an Background Removal and Fading Effect. Image processing application built with Python, Gradio, and PyTorch. It offers advanced image segmentation for background removal and fading effects. The app can run on either **CPU** or **GPU**, depending on your hardware capabilities.
 
 ---
+
 # Architecture
 
 ![Alt text](assets/archi.png)
