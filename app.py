@@ -51,9 +51,12 @@ def process_file(f):
     transparent.save(name_path)
     return name_path
 
-
-def apply_fade_effect(image_path, blur_strength=100, edge_thickness=20):
-    """Applies fade effect and returns the file path of the modified image."""
+def apply_fade_effect(image_path, blur_strength=100, edge_thickness=20, global_alpha=1.0):
+    """Applies fade effect and global transparency to an image and returns the file path."""
+    #invert Alfa
+    global_alpha = 1 - global_alpha
+    
+    # Open image and convert to RGBA
     image_pil = Image.open(image_path).convert("RGBA")
     image = np.array(image_pil)
 
@@ -75,6 +78,11 @@ def apply_fade_effect(image_path, blur_strength=100, edge_thickness=20):
 
     # Blend with original alpha channel
     new_alpha = np.minimum(alpha, blurred_edges)
+
+    # Apply global alpha factor
+    new_alpha = (new_alpha * global_alpha).astype(np.uint8)
+
+    # Update image alpha channel
     image[:, :, 3] = new_alpha  
 
     # Convert back to PIL Image
@@ -84,7 +92,7 @@ def apply_fade_effect(image_path, blur_strength=100, edge_thickness=20):
     faded_image.save(output_path, format="PNG")
     return output_path
 
-
+# Gradio App
 with gr.Blocks() as app:
     gr.Markdown("# Image Processor App")
     
@@ -106,12 +114,14 @@ with gr.Blocks() as app:
                     faded_output = gr.File(label="Faded PNG Image")
             with gr.Row():
                 with gr.Column():
-                    blur_slider = gr.Slider(minimum=10, maximum=1000, step=10, label="Blur Strength", value=100)
+                    blur_slider = gr.Slider(minimum=0, maximum=1000, step=10, label="Blur Strength", value=100)
                 with gr.Column():
-                    edge_slider = gr.Slider(minimum=10, maximum=300, step=10, label="Edge Thickness", value=20)
-            
-            fade_button = gr.Button("Apply Fade")
-            fade_button.click(apply_fade_effect, inputs=[processed_image, blur_slider, edge_slider], outputs=faded_output)
+                    edge_slider = gr.Slider(minimum=0, maximum=300, step=10, label="Edge Thickness", value=20)
+                with gr.Column():
+                    alpha_slider = gr.Slider(minimum=0.0, maximum=1.0, step=0.05, label="Global Alpha", value=0.3)
 
+            fade_button = gr.Button("Apply Fade")
+            fade_button.click(apply_fade_effect, inputs=[processed_image, blur_slider, edge_slider, alpha_slider], outputs=faded_output)
+            
 if __name__ == "__main__":
     app.launch(server_name="0.0.0.0", server_port=int(PORT), share=True)
