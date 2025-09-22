@@ -6,7 +6,7 @@ FadeAway is an Background Removal and Fading Effect. Image processing applicatio
 
 # Architecture
 
-![Alt text](assets/archi.png)
+![Alt text](archi.png)
 
 # UI
 
